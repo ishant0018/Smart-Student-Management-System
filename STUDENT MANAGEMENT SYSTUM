@@ -1,0 +1,136 @@
+import json
+import os
+FILE_NAME = "students.json"
+# Load student data
+def load_data():
+    if os.path.exists(FILE_NAME):
+        with open(FILE_NAME, "r") as file:
+            return json.load(file)
+    return {}
+# Save student data
+def save_data(data):
+    with open(FILE_NAME, "w") as file:
+        json.dump(data, file, indent=4)
+# Add student
+def add_student(data):
+    roll = input("Enter Roll Number: ")
+    if roll in data:
+        print("Student already exists!")
+        return
+    name = input("Enter Name: ")
+    age = input("Enter Age: ")
+    course = input("Enter Course: ")
+    marks = float(input("Enter Marks: "))
+    if marks >= 90:
+        grade = "A+"
+    elif marks >= 80:
+        grade = "A"
+    elif marks >= 70:
+        grade = "B"
+    elif marks >= 60:
+        grade = "C"
+    else:
+        grade = "F"
+    data[roll] = {
+        "Name": name,
+        "Age": age,
+        "Course": course,
+        "Marks": marks,
+        "Grade": grade
+    }
+    save_data(data)
+    print("Student Added Successfully!")
+# Display all students
+def display_students(data):
+    if not data:
+        print("No records found.")
+        return
+    print("\n------ Student Records ------")
+    for roll, info in data.items():
+        print(f"""
+Roll Number : {roll}
+Name        : {info['Name']}
+Age         : {info['Age']}
+Course      : {info['Course']}
+Marks       : {info['Marks']}
+Grade       : {info['Grade']}
+-------------------------------
+""")
+# Search student
+def search_student(data):
+    roll = input("Enter Roll Number: ")
+    if roll in data:
+        print(data[roll])
+    else:
+        print("Student Not Found.")
+# Update student
+def update_student(data):
+    roll = input("Enter Roll Number: ")
+    if roll not in data:
+        print("Student Not Found.")
+        return
+    print("Leave blank to keep old value.")
+    name = input("New Name: ")
+    age = input("New Age: ")
+    course = input("New Course: ")
+    marks = input("New Marks: ")
+    if name:
+        data[roll]["Name"] = name
+    if age:
+        data[roll]["Age"] = age
+    if course:
+        data[roll]["Course"] = course
+    if marks:
+        marks = float(marks)
+        data[roll]["Marks"] = marks
+        if marks >= 90:
+            grade = "A+"
+        elif marks >= 80:
+            grade = "A"
+        elif marks >= 70:
+            grade = "B"
+        elif marks >= 60:
+            grade = "C"
+        else:
+            grade = "F"
+        data[roll]["Grade"] = grade
+    save_data(data)
+    print("Student Updated Successfully.")
+# Delete student
+def delete_student(data):
+    roll = input("Enter Roll Number: ")
+    if roll in data:
+        del data[roll]
+        save_data(data)
+        print("Student Deleted Successfully.")
+    else:
+        print("Student Not Found.")
+# Main Program
+students = load_data()
+while True:
+    print("""
+======== Student Management System ========
+1. Add Student
+2. Display All Students
+3. Search Student
+4. Update Student
+5. Delete Student
+6. Exit
+===========================================
+""")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        add_student(students)
+    elif choice == "2":
+        display_students(students)
+    elif choice == "3":
+        search_student(students)
+    elif choice == "4":
+        update_student(students)
+    elif choice == "5":
+        delete_student(students)
+    elif choice == "6":
+        print("Thank you for using the Student Management System!")
+        break
+    else:
+        print("Invalid Choice. Please try again.")
